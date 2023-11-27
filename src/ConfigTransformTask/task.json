@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "cbd067b0-e487-43e6-950d-619aa19141a7",
+  "name": "ConfigurationTransformation",
+  "friendlyName": "Configuration Transformation",
+  "description": "Configuration transformation task for Azure DevOps",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "Dominik Zarsky",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "instanceNameFormat": "Transform $(sourcePath)",
+  "inputs": [
+    {
+      "name": "fileType",
+      "type": "pickList",
+      "label": "File type",
+      "defaultValue": "Json",
+      "required": true,
+      "helpMarkDown": "Config file type",
+      "options": {
+        "Json": "JSON"
+      }
+    },
+    {
+      "name": "targetPath",
+      "type": "filePath",
+      "label": "Target path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path of the file to transform"
+    },
+    {
+      "name": "transformations",
+      "type": "multiLine",
+      "label": "Transformations",
+      "defaultValue": "{\n  \"AppName\": \"MyApp\",\n  \"ConnectionStrings.Default\": \"Server=postgresql.database;Port=5432;Database=MyApp;User Id=admin;Password=SecretPa$$word;\"\n}",
+      "required": true,
+      "helpMarkDown": "JSON representation of transformation.",
+      "properties": {
+        "resizable": true,
+        "rows": "15"
+      }
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "index.js"
+    }
+  }
+}
