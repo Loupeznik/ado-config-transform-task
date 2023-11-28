@@ -1,6 +1,6 @@
 {
   "name": "configtransformtask",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "An opinionated task to transform configuration files of various formats",
   "main": "index.ts",
   "scripts": {
@@ -11,9 +11,11 @@
   "author": "Dominik Zarsky",
   "license": "MIT",
   "dependencies": {
-    "azure-pipelines-task-lib": "^4.7.0"
+    "azure-pipelines-task-lib": "^4.7.0",
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.10.0",
     "@types/q": "^1.5.8",

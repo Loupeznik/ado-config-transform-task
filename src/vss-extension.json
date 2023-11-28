@@ -1,36 +1,46 @@
 {
-    "manifestVersion": 1,
-    "id": "ado-config-transform-task",
-    "name": "ADO Config Transform Task",
-    "version": "1.0.0",
-    "publisher": "Dominik Zarsky",
-    "targets": [
-        {
-            "id": "Microsoft.VisualStudio.Services"
-        }
-    ],    
-    "description": "Configuration transformation task for Azure DevOps",
-    "categories": [
-        "Azure Pipelines"
-    ],
-    "icons": {
-        "default": "images/icon.png"        
-    },
-    "files": [
-        {
-            "path": "ConfigTransformTask"
-        }
-    ],
-    "contributions": [
-        {
-            "id": "ado-config-transform-task",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "ConfigTransformTask"
-            }
-        }
-    ]
+  "manifestVersion": 1,
+  "id": "config-transform-task",
+  "name": "Config Transform Task",
+  "version": "1.1.0",
+  "publisher": "DominikZarsky",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Configuration transformation task for Azure DevOps",
+  "categories": ["Azure Pipelines"],
+  "icons": {
+    "default": "Images/logo.png"
+  },
+  "files": [
+    {
+      "path": "ConfigTransformTask"
+    }
+  ],
+  "content": {
+    "details": {
+      "path": "overview.md"
+    }
+  },
+  "links": {
+    "license": {
+      "uri": "https://github.com/loupeznik/ADOConfigTransformTask/blob/master/LICENSE"
+    }
+  },
+  "contributions": [
+    {
+      "id": "config-transform-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": ["ms.vss-distributed-task.tasks"],
+      "properties": {
+        "name": "ConfigTransformTask"
+      }
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/loupeznik/ADOConfigTransformTask"
+  }
 }

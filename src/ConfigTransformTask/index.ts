@@ -1,5 +1,7 @@
 import tl = require('azure-pipelines-task-lib/task');
 import { readFileSync, writeFileSync } from 'fs';
+import transformJson from './transformations/json';
+import transformYaml from './transformations/yaml';
 
 type Inputs = {
 	FileType: 'json' | 'xml' | 'yaml';
@@ -25,41 +27,19 @@ async function run() {
 				const resultJson = transformJson(targetJson, inputs.Transformations);
 				writeFileSync(inputs.TargetPath, resultJson);
 				break;
+			case 'yaml':
+				const targetYaml = readFileSync(inputs.TargetPath, 'utf8');
+				const resultYaml = transformYaml(targetYaml, inputs.Transformations);
+				writeFileSync(inputs.TargetPath, resultYaml);
+				break;
 			default:
 				throw new Error(`File type not supported: ${inputs.FileType}`);
 		}
+
+		tl.setResult(tl.TaskResult.Succeeded, `Transformed ${inputs.TargetPath}`);
 	} catch (err: any) {
-		tl.setResult(tl.TaskResult.Failed, err.message as string);
+		tl.setResult(tl.TaskResult.Failed, `An error has occured during transformation - ${err.message as string}`);
 	}
-}
-
-function transformJson(target: string, transformations: string) {
-	let targetJson = JSON.parse(target);
-
-	const transformedTarget = transformJsonInternal(targetJson, JSON.parse(transformations));
-
-	targetJson = transformedTarget;
-
-	return JSON.stringify(targetJson);
-}
-
-function transformJsonInternal(target: any, transformations: any) {
-	Object.keys(transformations).forEach(transformKey => {
-		const keys = transformKey.split('.');
-		let currentTarget = target;
-
-		for (let i = 0; i < keys.length; i++) {
-			const key = keys[i];
-			if (i === keys.length - 1) {
-				currentTarget[key] = transformations[transformKey];
-			} else {
-				currentTarget[key] = currentTarget[key] || {};
-				currentTarget = currentTarget[key];
-			}
-		}
-	});
-
-	return target;
 }
 
 run();
