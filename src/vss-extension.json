@@ -42,5 +42,8 @@
   "repository": {
     "type": "git",
     "uri": "https://github.com/loupeznik/ADOConfigTransformTask"
-  }
+  },
+  "galleryFlags": [
+    "Preview"
+  ]
 }
