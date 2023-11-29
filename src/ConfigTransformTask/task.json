@@ -10,7 +10,7 @@
 	"version": {
 		"Major": 1,
 		"Minor": 2,
-		"Patch": 3
+		"Patch": 5
 	},
 	"visibility": ["Build", "Release"],
 	"instanceNameFormat": "Transform $(sourcePath)",
@@ -19,7 +19,7 @@
 			"name": "fileType",
 			"type": "pickList",
 			"label": "File type",
-			"defaultValue": "Json",
+			"defaultValue": "JSON",
 			"required": true,
 			"helpMarkDown": "Config file type",
 			"options": {
