@@ -1,11 +1,8 @@
 function transformJson(target: string, transformations: string) {
-	let targetJson = JSON.parse(target);
-
+	const targetJson = JSON.parse(target);
 	const transformedTarget = transformJsonInternal(targetJson, JSON.parse(transformations));
 
-	targetJson = transformedTarget;
-
-	return JSON.stringify(targetJson);
+	return JSON.stringify(transformedTarget);
 }
 
 function transformJsonInternal(target: any, transformations: any) {
