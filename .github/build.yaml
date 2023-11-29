@@ -1,0 +1,40 @@
+name: buildAndPublish
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'src/**'
+    tags:
+      - v*.*.*
+  pull_request:
+      branches: [ "master" ]
+      paths:
+        - 'src/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '20.x'
+      - name: Install dependencies and build package
+        run: |
+          npm install -g tfx-cli typescript@4.6.3
+          npm install
+          npm run build
+        working-directory: src/ConfigTransformTask
+      - name: Build VSIX
+        run: tfx extension create --manifest-globs vss-extension.json
+        working-directory: src
+      - name: Publish artifact
+        if: ${{ github.event_name != 'pull_request'}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: src/*.vsix
