@@ -27,7 +27,8 @@
       "helpMarkDown": "Config file type",
       "options": {
         "json": "JSON",
-        "yaml": "YAML"
+        "yaml": "YAML",
+        "flat": "FlatFile"
       }
     },
     {
@@ -49,6 +50,19 @@
         "resizable": true,
         "rows": "15"
       }
+    },
+    {
+      "name": "separator",
+      "type": "pickList",
+      "label": "Separator",
+      "defaultValue": "=",
+      "helpMarkDown": "The flat file configuration key-value separator",
+      "required": false,
+      "options": {
+        "=": "=",
+        ":": ":"
+      },
+      "visibleRule": "fileType = flat"
     }
   ],
   "execution": {
