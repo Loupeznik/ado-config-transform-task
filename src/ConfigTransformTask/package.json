@@ -1,6 +1,6 @@
 {
   "name": "configtransformtask",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "An opinionated task to transform configuration files of various formats",
   "main": "index.ts",
   "scripts": {
