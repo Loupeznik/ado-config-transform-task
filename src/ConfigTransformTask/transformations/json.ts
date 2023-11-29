@@ -1,4 +1,4 @@
-function transformJson(target: string, transformations: string) {
+export default function transformJson(target: string, transformations: string) {
 	const targetJson = JSON.parse(target);
 	const transformedTarget = transformJsonInternal(targetJson, JSON.parse(transformations));
 
@@ -23,5 +23,3 @@ function transformJsonInternal(target: any, transformations: any) {
 
 	return target;
 }
-
-export default transformJson;

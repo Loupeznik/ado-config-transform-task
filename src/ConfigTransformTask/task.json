@@ -1,78 +1,72 @@
 {
-  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-  "id": "cbd067b0-e487-43e6-950d-619aa19141a7",
-  "name": "ConfigurationTransformation",
-  "friendlyName": "Configuration Transformation",
-  "description": "Configuration transformation task for Azure DevOps",
-  "helpMarkDown": "",
-  "category": "Utility",
-  "author": "Dominik Zarsky",
-  "version": {
-    "Major": 1,
-    "Minor": 2,
-    "Patch": 1
-  },
-  "visibility": [
-    "Build",
-    "Release"
-  ],
-  "instanceNameFormat": "Transform $(sourcePath)",
-  "inputs": [
-    {
-      "name": "fileType",
-      "type": "pickList",
-      "label": "File type",
-      "defaultValue": "Json",
-      "required": true,
-      "helpMarkDown": "Config file type",
-      "options": {
-        "json": "JSON",
-        "yaml": "YAML",
-        "flat": "FlatFile"
-      }
-    },
-    {
-      "name": "targetPath",
-      "type": "filePath",
-      "label": "Target path",
-      "defaultValue": "",
-      "required": true,
-      "helpMarkDown": "Path of the file to transform"
-    },
-    {
-      "name": "transformations",
-      "type": "multiLine",
-      "label": "Transformations",
-      "defaultValue": "{\n  \"AppName\": \"MyApp\",\n  \"ConnectionStrings.Default\": \"Server=postgresql.database;Port=5432;Database=MyApp;User Id=admin;Password=SecretPa$$word;\"\n}",
-      "required": true,
-      "helpMarkDown": "JSON representation of transformation.",
-      "properties": {
-        "resizable": true,
-        "rows": "15"
-      }
-    },
-    {
-      "name": "separator",
-      "type": "pickList",
-      "label": "Separator",
-      "defaultValue": "=",
-      "helpMarkDown": "The flat file configuration key-value separator",
-      "required": false,
-      "options": {
-        "=": "=",
-        ":": ":"
-      },
-      "visibleRule": "fileType = flat"
-    }
-  ],
-  "execution": {
-    "Node16": {
-      "target": "dist/index.js"
-    }
-  },
-  "minimumAgentVersion": "2.144.0",
-  "runsOn": [
-    "Agent",
-    "DeploymentGroup"
-  ]
+	"$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+	"id": "cbd067b0-e487-43e6-950d-619aa19141a7",
+	"name": "ConfigurationTransformation",
+	"friendlyName": "Configuration Transformation",
+	"description": "Configuration transformation task for Azure DevOps",
+	"helpMarkDown": "",
+	"category": "Utility",
+	"author": "Dominik Zarsky",
+	"version": {
+		"Major": 1,
+		"Minor": 2,
+		"Patch": 3
+	},
+	"visibility": ["Build", "Release"],
+	"instanceNameFormat": "Transform $(sourcePath)",
+	"inputs": [
+		{
+			"name": "fileType",
+			"type": "pickList",
+			"label": "File type",
+			"defaultValue": "Json",
+			"required": true,
+			"helpMarkDown": "Config file type",
+			"options": {
+				"json": "JSON",
+				"yaml": "YAML",
+				"flat": "FlatFile"
+			}
+		},
+		{
+			"name": "targetPath",
+			"type": "filePath",
+			"label": "Target path",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Path of the file to transform"
+		},
+		{
+			"name": "transformations",
+			"type": "multiLine",
+			"label": "Transformations",
+			"defaultValue": "{\n  \"AppName\": \"MyApp\",\n  \"ConnectionStrings.Default\": \"Server=postgresql.database;Port=5432;Database=MyApp;User Id=admin;Password=SecretPa$$word;\"\n}",
+			"required": true,
+			"helpMarkDown": "JSON representation of transformation.",
+			"properties": {
+				"resizable": true,
+				"rows": "15"
+			}
+		},
+		{
+			"name": "separator",
+			"type": "pickList",
+			"label": "Separator",
+			"defaultValue": "=",
+			"helpMarkDown": "The flat file configuration key-value separator",
+			"required": false,
+			"options": {
+				"=": "=",
+				":": ":"
+			},
+			"visibleRule": "fileType = flat"
+		}
+	],
+	"execution": {
+		"Node16": {
+			"target": "dist/index.js"
+		}
+	},
+	"minimumAgentVersion": "2.144.0",
+	"runsOn": ["Agent", "DeploymentGroup"]
 }

@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "config-transform-task",
   "name": "Config Transform Task",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "publisher": "DominikZarsky",
   "targets": [
     {
@@ -43,7 +43,5 @@
     "type": "git",
     "uri": "https://github.com/loupeznik/ADOConfigTransformTask"
   },
-  "galleryFlags": [
-    "Preview"
-  ]
+  "galleryFlags": ["Preview", "Public"]
 }

@@ -6,10 +6,10 @@ export const checkFileValidity = (filePath: string, type: FileType) => {
 	switch (type) {
 		case 'json':
 			return getExtension(filePath) === 'json';
-        case 'yaml':
-            return getExtension(filePath) === 'yaml' || getExtension(filePath) === 'yml';
-        default:
-            return true;
+		case 'yaml':
+			return getExtension(filePath) === 'yaml' || getExtension(filePath) === 'yml';
+		default:
+			return true;
 	}
 };
 
