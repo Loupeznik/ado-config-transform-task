@@ -1,9 +1,9 @@
 import tl = require('azure-pipelines-task-lib/task');
 import { readFileSync, writeFileSync } from 'fs';
-import transformJson from './transformations/json';
-import transformYaml from './transformations/yaml';
 import { FileType, checkFileValidity } from './helpers/fileHelpers';
 import transformFlatFile from './transformations/flat';
+import transformJson from './transformations/json';
+import transformYaml from './transformations/yaml';
 
 type Inputs = {
 	FileType: FileType;
@@ -51,7 +51,7 @@ async function run() {
 
 		tl.setResult(tl.TaskResult.Succeeded, `Transformed ${inputs.TargetPath}`);
 	} catch (err: any) {
-		tl.setResult(tl.TaskResult.Failed, `An error has occured during transformation - ${err.message as string}`);
+		tl.setResult(tl.TaskResult.Failed, `An error has occured during transformation - ${err}`);
 	}
 }
 
