@@ -8,7 +8,7 @@ export default function transformFlatFile(target: string, transformations: strin
 		const lineParts = line.split(separator);
 		const key = lineParts[0];
 
-		if (transformationsObject[key]) {
+		if (transformationsObject[key] !== undefined) {
 			keysToTransform = keysToTransform.filter(k => k !== key);
 			return `${key}${separator}${transformationsObject[key]}`;
 		}
