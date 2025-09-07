@@ -8,6 +8,153 @@ describe('ConfigTransformTask tests', function () {
 
 	after(() => {});
 
+	it('json transformation should succeed', function (done: Mocha.Done) {
+		this.timeout(1000);
+
+		const tp: string = path.join(__dirname, 'json_success.js');
+		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+
+		const filePath = path.join(__dirname, 'appsettings.json');
+
+		const content = `{
+  "InsuranceConfig": {
+    "BuildVersion": "0.0.0.0"
+  }
+}`;
+
+		fs.writeFile(filePath, content, err => {
+			if (err) {
+				console.error(err);
+				done(err);
+				return;
+			}
+
+			tr.runAsync()
+				.then(() => {
+					assert.equal(tr.succeeded, true, 'should have succeeded');
+					assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
+					assert.equal(tr.errorIssues.length, 0, 'should have no errors');
+
+					fs.readFile(filePath, 'utf-8', (err, fileContent) => {
+						if (err) {
+							done(err);
+							return;
+						}
+						
+						const parsedContent = JSON.parse(fileContent);
+						assert.equal(parsedContent.InsuranceConfig.BuildVersion, '1.2.3.4', 'should have updated BuildVersion');
+
+						fs.unlinkSync(filePath);
+						done();
+					});
+				})
+				.catch(error => {
+					try {
+						fs.unlinkSync(filePath);
+					} catch {}
+					done(error);
+				});
+		});
+	});
+
+	it('json transformation with whitespace should succeed', function (done: Mocha.Done) {
+		this.timeout(1000);
+
+		const tp: string = path.join(__dirname, 'json_whitespace.js');
+		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+
+		const filePath = path.join(__dirname, 'appsettings.json');
+
+		const content = `{
+  "InsuranceConfig": {
+    "BuildVersion": "0.0.0.0"
+  }
+}`;
+
+		fs.writeFile(filePath, content, err => {
+			if (err) {
+				console.error(err);
+				done(err);
+				return;
+			}
+
+			tr.runAsync()
+				.then(() => {
+					assert.equal(tr.succeeded, true, 'should have succeeded');
+					assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
+					assert.equal(tr.errorIssues.length, 0, 'should have no errors');
+
+					fs.readFile(filePath, 'utf-8', (err, fileContent) => {
+						if (err) {
+							done(err);
+							return;
+						}
+						
+						const parsedContent = JSON.parse(fileContent);
+						assert.equal(parsedContent.InsuranceConfig.BuildVersion, '1.2.3.4', 'should have updated BuildVersion');
+
+						fs.unlinkSync(filePath);
+						done();
+					});
+				})
+				.catch(error => {
+					try {
+						fs.unlinkSync(filePath);
+					} catch {}
+					done(error);
+				});
+		});
+	});
+
+	it('json transformation with BOM should succeed', function (done: Mocha.Done) {
+		this.timeout(1000);
+
+		const tp: string = path.join(__dirname, 'json_bom.js');
+		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+
+		const filePath = path.join(__dirname, 'appsettings.json');
+
+		const content = `{
+  "InsuranceConfig": {
+    "BuildVersion": "0.0.0.0"
+  }
+}`;
+
+		fs.writeFile(filePath, content, err => {
+			if (err) {
+				console.error(err);
+				done(err);
+				return;
+			}
+
+			tr.runAsync()
+				.then(() => {
+					assert.equal(tr.succeeded, true, 'should have succeeded');
+					assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
+					assert.equal(tr.errorIssues.length, 0, 'should have no errors');
+
+					fs.readFile(filePath, 'utf-8', (err, fileContent) => {
+						if (err) {
+							done(err);
+							return;
+						}
+						
+						const parsedContent = JSON.parse(fileContent);
+						assert.equal(parsedContent.InsuranceConfig.BuildVersion, '1.2.3.4', 'should have updated BuildVersion');
+
+						fs.unlinkSync(filePath);
+						done();
+					});
+				})
+				.catch(error => {
+					try {
+						fs.unlinkSync(filePath);
+					} catch {}
+					done(error);
+				});
+		});
+	});
+
 	// Test currently doesn't work (probably due to mocha and local file system)
 	it('flat file transformation should succeed', function (done: Mocha.Done) {
 		this.timeout(1000);
