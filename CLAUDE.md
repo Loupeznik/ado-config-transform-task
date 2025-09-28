@@ -22,17 +22,23 @@ Each transformation module follows the same pattern: accepts file content and tr
 
 ### Build and Test
 ```bash
-# Install dependencies
 cd src/ConfigTransformTask
-npm install
 
-# Build TypeScript
-npm run build
+# Development build (includes dev dependencies)
+npm run build:dev
 
-# Manual testing (set environment variables first)
-cd src/ConfigTransformTask
-tsc
-node dist/index.js
+# Production build (runtime dependencies only)
+npm run build:prod
+
+# Complete VSIX build
+npm run build:vsix
+
+# Run tests
+npm test
+
+# Linting and formatting
+npm run lint
+npm run format
 ```
 
 ### Manual Testing Environment Variables
@@ -55,8 +61,11 @@ export INPUT_Separator="=" # For flat files only
 
 ### Package Extension
 ```bash
-# From src/ directory
-tfx extension create --manifest-globs vss-extension.json
+# Recommended: Use build script (handles everything)
+cd src/ConfigTransformTask && npm run build:vsix
+
+# Manual: From src/ directory
+cd src && tfx extension create --manifest-globs vss-extension.json
 ```
 
 ## Key Dependencies
@@ -87,10 +96,11 @@ All transformations use JSON format with dot notation for nested keys:
 ## CI/CD
 
 GitHub Actions workflow in `.github/workflows/build.yml`:
-- Builds on push to master and PRs
+- Runs linting and tests first
+- Builds production package with runtime dependencies only
 - Creates VSIX package
 - Publishes to marketplace on tagged releases (requires `PUBLISH_TOKEN` secret)
-- Uses Node.js 20.x and TypeScript 4.6.3
+- Uses Node.js 20.x and Node20_1 runner
 
 ## Testing Strategy
 

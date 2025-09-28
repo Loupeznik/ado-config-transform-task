@@ -14,7 +14,7 @@ $env:INPUT_FileType="flat"
 $env:INPUT_Transformations="{""ENV"":""CHANGED"",""BASE_URL"":""https://example.com"",""API_KEY"":""ADDED_KEY_123""}"
 $env:INPUT_Separator="="
 
-npm run build
+npm run build:dev
 node dist/index.js
 
 Get-Content -Path $env:INPUT_TargetPath
@@ -33,7 +33,7 @@ export INPUT_Separator="="
 # Create a test file
 echo -e "ENV=development\nBASE_URL=http://localhost:8080\nAPP_NAME=UnitTests" > test-config.txt
 
-npm run build
+npm run build:dev
 node dist/index.js
 
 cat test-config.txt
@@ -54,7 +54,7 @@ export INPUT_Transformations='{"database.host":"production-server","app.version"
 # Create test JSON file
 echo '{"database":{"host":"localhost","port":5432},"app":{"version":"1.0.0"}}' > test-app.json
 
-npm run build
+npm run build:dev
 node dist/index.js
 
 cat test-app.json
@@ -71,7 +71,7 @@ $env:INPUT_Transformations='{"database.host":"production-server","app.version":"
 # Create test JSON file
 '{"database":{"host":"localhost","port":5432},"app":{"version":"1.0.0"}}' | Out-File -FilePath test-app.json -Encoding utf8
 
-npm run build
+npm run build:dev
 node dist/index.js
 
 Get-Content test-app.json
@@ -97,7 +97,7 @@ app:
   version: "1.0.0"
 EOF
 
-npm run build
+npm run build:dev
 node dist/index.js
 
 cat test-config.yaml
@@ -121,7 +121,7 @@ app:
   version: "1.0.0"
 "@ | Out-File -FilePath test-config.yaml -Encoding utf8
 
-npm run build
+npm run build:dev
 node dist/index.js
 
 Get-Content test-config.yaml
