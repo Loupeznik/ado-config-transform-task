@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "config-transform-task",
   "name": "Config Transform Task",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "publisher": "DominikZarsky",
   "targets": [
     {
