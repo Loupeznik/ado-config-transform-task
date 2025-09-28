@@ -34,7 +34,7 @@ describe('ConfigTransformTask tests', () => {
 				return;
 			}
 
-			tr.runAsync()
+			tr.runAsync(20)
 				.then(() => {
 					assert.equal(tr.succeeded, true, 'should have succeeded');
 					assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
@@ -87,7 +87,7 @@ describe('ConfigTransformTask tests', () => {
 				return;
 			}
 
-			tr.runAsync()
+			tr.runAsync(20)
 				.then(() => {
 					assert.equal(tr.succeeded, true, 'should have succeeded');
 					assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
@@ -140,7 +140,7 @@ describe('ConfigTransformTask tests', () => {
 				return;
 			}
 
-			tr.runAsync()
+			tr.runAsync(20)
 				.then(() => {
 					assert.equal(tr.succeeded, true, 'should have succeeded');
 					assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
@@ -192,7 +192,7 @@ APP_NAME=UnitTests`;
 				return;
 			}
 
-			tr.runAsync()
+			tr.runAsync(20)
 			.then(() => {
 				assert.equal(tr.succeeded, true, 'should have succeeded');
 				assert.equal(tr.warningIssues.length, 0, 'should have no warnings');

@@ -19,7 +19,7 @@
 			"name": "fileType",
 			"type": "pickList",
 			"label": "File type",
-			"defaultValue": "JSON",
+			"defaultValue": "json",
 			"required": true,
 			"helpMarkDown": "Config file type",
 			"options": {
