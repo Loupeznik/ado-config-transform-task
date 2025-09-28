@@ -63,10 +63,10 @@
 		}
 	],
 	"execution": {
-		"Node16": {
+		"Node20_1": {
 			"target": "dist/index.js"
 		}
 	},
-	"minimumAgentVersion": "2.144.0",
+	"minimumAgentVersion": "3.220.0",
 	"runsOn": ["Agent", "DeploymentGroup"]
 }

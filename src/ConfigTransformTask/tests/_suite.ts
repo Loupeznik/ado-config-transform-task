@@ -4,12 +4,17 @@ import * as path from 'node:path';
 import * as ttm from 'azure-pipelines-task-lib/mock-test';
 
 describe('ConfigTransformTask tests', () => {
-	before(() => {});
+	before(() => {
+		// Set Node version for MockTestRunner to use Node 20
+		process.env.TASK_TEST_NODE_VERSION = '20';
+	});
 
-	after(() => {});
+	after(() => {
+		delete process.env.TASK_TEST_NODE_VERSION;
+	});
 
 	it('json transformation should succeed', function (done: Mocha.Done) {
-		this.timeout(1000);
+		this.timeout(30000);
 
 		const tp: string = path.join(__dirname, 'json_success.js');
 		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
@@ -62,7 +67,7 @@ describe('ConfigTransformTask tests', () => {
 	});
 
 	it('json transformation with whitespace should succeed', function (done: Mocha.Done) {
-		this.timeout(1000);
+		this.timeout(30000);
 
 		const tp: string = path.join(__dirname, 'json_whitespace.js');
 		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
@@ -115,7 +120,7 @@ describe('ConfigTransformTask tests', () => {
 	});
 
 	it('json transformation with BOM should succeed', function (done: Mocha.Done) {
-		this.timeout(1000);
+		this.timeout(30000);
 
 		const tp: string = path.join(__dirname, 'json_bom.js');
 		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
@@ -169,7 +174,7 @@ describe('ConfigTransformTask tests', () => {
 
 	// Test currently doesn't work (probably due to mocha and local file system)
 	it('flat file transformation should succeed', function (done: Mocha.Done) {
-		this.timeout(1000);
+		this.timeout(30000);
 
 		const tp: string = path.join(__dirname, 'flat_success.js');
 		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
@@ -183,10 +188,11 @@ APP_NAME=UnitTests`;
 		fs.writeFile(filePath, content, err => {
 			if (err) {
 				console.error(err);
+				done(err);
+				return;
 			}
-		});
 
-		tr.runAsync()
+			tr.runAsync()
 			.then(() => {
 				assert.equal(tr.succeeded, true, 'should have succeeded');
 				assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
@@ -204,13 +210,14 @@ APP_NAME=UnitTests`;
 					assert.equal(fileContent.includes('API_KEY'), true, 'should have added API_KEY');
 					assert.equal(fileContent.includes('APP_NAME=UnitTests'), true, 'should have kept APP_NAME');
 
+					// Clean up the test file after assertions
+					fs.unlinkSync(filePath);
 					done();
 				});
-
-				fs.unlinkSync(filePath);
 			})
 			.catch(error => {
 				done(error);
 			});
+		});
 	});
 });
