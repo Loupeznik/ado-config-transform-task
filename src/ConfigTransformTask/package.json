@@ -4,7 +4,7 @@
 	"description": "An opinionated task to transform configuration files of various formats",
 	"main": "index.ts",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "mocha dist/tests/_suite.js --reporter spec",
 		"build": "tsc",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
@@ -25,6 +25,7 @@
 		"@types/node": "^20.10.0",
 		"@types/q": "^1.5.8",
 		"mocha": "^10.7.3",
-		"sync-request": "^6.1.0"
+		"sync-request": "^6.1.0",
+		"typescript": "^5.9.2"
 	}
 }

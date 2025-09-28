@@ -54,8 +54,9 @@ async function run() {
 		}
 
 		tl.setResult(tl.TaskResult.Succeeded, `Transformed ${inputs.TargetPath}`);
-	} catch (err: any) {
-		tl.setResult(tl.TaskResult.Failed, `An error has occured during transformation - ${err}`);
+	} catch (err: unknown) {
+		const errorMessage = err instanceof Error ? err.message : String(err);
+		tl.setResult(tl.TaskResult.Failed, `An error has occured during transformation - ${errorMessage}`);
 	}
 }
 

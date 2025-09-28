@@ -36,11 +36,21 @@ node dist/index.js
 ```
 
 ### Manual Testing Environment Variables
+
+**PowerShell (Windows):**
 ```powershell
 $env:INPUT_TargetPath="path/to/config/file"
 $env:INPUT_FileType="json|yaml|flat"
 $env:INPUT_Transformations='{"key":"value","nested.key":"newvalue"}'
 $env:INPUT_Separator="=" # For flat files only
+```
+
+**Bash (Linux/macOS):**
+```bash
+export INPUT_TargetPath="path/to/config/file"
+export INPUT_FileType="json|yaml|flat"
+export INPUT_Transformations='{"key":"value","nested.key":"newvalue"}'
+export INPUT_Separator="=" # For flat files only
 ```
 
 ### Package Extension
@@ -84,4 +94,39 @@ GitHub Actions workflow in `.github/workflows/build.yml`:
 
 ## Testing Strategy
 
-Tests are in `src/ConfigTransformTask/tests/` using Mocha with Azure DevOps task mock library. Currently, test script needs configuration (`npm test` exits with error).
+Tests are in `src/ConfigTransformTask/tests/` using Mocha with Azure DevOps task mock library.
+
+**Note:** Automated tests currently have Node.js version compatibility issues (trying to download Node 16 instead of using current Node 20+). Manual testing is recommended instead.
+
+### Manual Testing Commands
+
+**JSON Test:**
+```bash
+cd src/ConfigTransformTask
+export INPUT_TargetPath="$(pwd)/test.json"
+export INPUT_FileType="json"
+export INPUT_Transformations='{"app.version":"2.0.0","database.host":"production"}'
+echo '{"app":{"version":"1.0.0"},"database":{"host":"localhost"}}' > test.json
+npm run build && node dist/index.js && cat test.json
+```
+
+**YAML Test:**
+```bash
+cd src/ConfigTransformTask
+export INPUT_TargetPath="$(pwd)/test.yaml"
+export INPUT_FileType="yaml"
+export INPUT_Transformations='{"app.environment":"production"}'
+echo -e "app:\n  environment: development" > test.yaml
+npm run build && node dist/index.js && cat test.yaml
+```
+
+**Flat File Test:**
+```bash
+cd src/ConfigTransformTask
+export INPUT_TargetPath="$(pwd)/test.env"
+export INPUT_FileType="flat"
+export INPUT_Transformations='{"ENV":"production","NEW_VAR":"added"}'
+export INPUT_Separator="="
+echo -e "ENV=development\nEXISTING=value" > test.env
+npm run build && node dist/index.js && cat test.env
+```
