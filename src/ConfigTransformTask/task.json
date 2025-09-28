@@ -9,11 +9,11 @@
 	"author": "Dominik Zarsky",
 	"version": {
 		"Major": 1,
-		"Minor": 2,
-		"Patch": 9
+		"Minor": 3,
+		"Patch": 0
 	},
 	"visibility": ["Build", "Release"],
-	"instanceNameFormat": "Transform $(sourcePath)",
+	"instanceNameFormat": "Transform $(targetPath)",
 	"inputs": [
 		{
 			"name": "fileType",
