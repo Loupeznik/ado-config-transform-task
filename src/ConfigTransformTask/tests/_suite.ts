@@ -1,10 +1,10 @@
-import * as assert from 'assert';
-import * as ttm from 'azure-pipelines-task-lib/mock-test';
+import * as assert from 'node:assert';
 import fs from 'node:fs';
-import * as path from 'path';
+import * as path from 'node:path';
+import * as ttm from 'azure-pipelines-task-lib/mock-test';
 
-describe('ConfigTransformTask tests', function () {
-	before(function () {});
+describe('ConfigTransformTask tests', () => {
+	before(() => {});
 
 	after(() => {});
 
@@ -40,9 +40,13 @@ describe('ConfigTransformTask tests', function () {
 							done(err);
 							return;
 						}
-						
+
 						const parsedContent = JSON.parse(fileContent);
-						assert.equal(parsedContent.InsuranceConfig.BuildVersion, '1.2.3.4', 'should have updated BuildVersion');
+						assert.equal(
+							parsedContent.InsuranceConfig.BuildVersion,
+							'1.2.3.4',
+							'should have updated BuildVersion',
+						);
 
 						fs.unlinkSync(filePath);
 						done();
@@ -89,9 +93,13 @@ describe('ConfigTransformTask tests', function () {
 							done(err);
 							return;
 						}
-						
+
 						const parsedContent = JSON.parse(fileContent);
-						assert.equal(parsedContent.InsuranceConfig.BuildVersion, '1.2.3.4', 'should have updated BuildVersion');
+						assert.equal(
+							parsedContent.InsuranceConfig.BuildVersion,
+							'1.2.3.4',
+							'should have updated BuildVersion',
+						);
 
 						fs.unlinkSync(filePath);
 						done();
@@ -138,9 +146,13 @@ describe('ConfigTransformTask tests', function () {
 							done(err);
 							return;
 						}
-						
+
 						const parsedContent = JSON.parse(fileContent);
-						assert.equal(parsedContent.InsuranceConfig.BuildVersion, '1.2.3.4', 'should have updated BuildVersion');
+						assert.equal(
+							parsedContent.InsuranceConfig.BuildVersion,
+							'1.2.3.4',
+							'should have updated BuildVersion',
+						);
 
 						fs.unlinkSync(filePath);
 						done();

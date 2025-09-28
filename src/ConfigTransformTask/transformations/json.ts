@@ -1,6 +1,6 @@
 function removeBom(str: string): string {
 	// Remove UTF-8 BOM (EF BB BF) if present
-	if (str.charCodeAt(0) === 0xFEFF) {
+	if (str.charCodeAt(0) === 0xfeff) {
 		return str.slice(1);
 	}
 	return str;
@@ -14,7 +14,9 @@ export default function transformJson(target: string, transformations: string) {
 	try {
 		targetJson = JSON.parse(target);
 	} catch (error) {
-		throw new Error(`Failed to parse target JSON file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		throw new Error(
+			`Failed to parse target JSON file: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
 	}
 
 	// Clean and parse transformations JSON with better error handling
@@ -23,7 +25,9 @@ export default function transformJson(target: string, transformations: string) {
 		const cleanTransformations = removeBom(transformations.trim());
 		transformationsJson = JSON.parse(cleanTransformations);
 	} catch (error) {
-		throw new Error(`Failed to parse transformations JSON: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		throw new Error(
+			`Failed to parse transformations JSON: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
 	}
 
 	const transformedTarget = transformJsonInternal(targetJson, transformationsJson);

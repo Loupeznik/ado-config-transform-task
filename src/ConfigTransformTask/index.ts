@@ -1,6 +1,7 @@
 import tl = require('azure-pipelines-task-lib/task');
-import { readFileSync, writeFileSync } from 'fs';
-import { FileType, checkFileValidity } from './helpers/fileHelpers';
+
+import { readFileSync, writeFileSync } from 'node:fs';
+import { checkFileValidity, type FileType } from './helpers/fileHelpers';
 import transformFlatFile from './transformations/flat';
 import transformJson from './transformations/json';
 import transformYaml from './transformations/yaml';
@@ -29,22 +30,25 @@ async function run() {
 		}
 
 		switch (inputs.FileType) {
-			case 'json':
+			case 'json': {
 				const targetJson = readFileSync(inputs.TargetPath, 'utf8');
 				const resultJson = transformJson(targetJson, inputs.Transformations);
 				writeFileSync(inputs.TargetPath, resultJson);
 				break;
-			case 'yaml':
+			}
+			case 'yaml': {
 				const targetYaml = readFileSync(inputs.TargetPath, 'utf8');
 				const resultYaml = transformYaml(targetYaml, inputs.Transformations);
 				writeFileSync(inputs.TargetPath, resultYaml);
 				break;
-			case 'flat':
+			}
+			case 'flat': {
 				const separator = tl.getInput('Separator', true) as '=' | ':';
 				const target = readFileSync(inputs.TargetPath, 'utf8');
 				const result = transformFlatFile(target, inputs.Transformations, separator);
 				writeFileSync(inputs.TargetPath, result);
 				break;
+			}
 			default:
 				throw new Error(`File type not supported: ${inputs.FileType}`);
 		}
