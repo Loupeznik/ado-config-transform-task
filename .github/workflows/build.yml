@@ -30,7 +30,7 @@ jobs:
           npm run build
           npm test
         working-directory: src/ConfigTransformTask
-      - name: Build VSIX package (optimized)
+      - name: Build VSIX package
         run: |
           npm install -g tfx-cli
           npm run build:vsix
