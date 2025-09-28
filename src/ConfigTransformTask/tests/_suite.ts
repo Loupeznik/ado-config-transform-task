@@ -1,15 +1,20 @@
-import * as assert from 'assert';
-import * as ttm from 'azure-pipelines-task-lib/mock-test';
+import * as assert from 'node:assert';
 import fs from 'node:fs';
-import * as path from 'path';
+import * as path from 'node:path';
+import * as ttm from 'azure-pipelines-task-lib/mock-test';
 
-describe('ConfigTransformTask tests', function () {
-	before(function () {});
+describe('ConfigTransformTask tests', () => {
+	before(() => {
+		// Set Node version for MockTestRunner to use Node 20
+		process.env.TASK_TEST_NODE_VERSION = '20';
+	});
 
-	after(() => {});
+	after(() => {
+		delete process.env.TASK_TEST_NODE_VERSION;
+	});
 
 	it('json transformation should succeed', function (done: Mocha.Done) {
-		this.timeout(1000);
+		this.timeout(30000);
 
 		const tp: string = path.join(__dirname, 'json_success.js');
 		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
@@ -29,7 +34,7 @@ describe('ConfigTransformTask tests', function () {
 				return;
 			}
 
-			tr.runAsync()
+			tr.runAsync(20)
 				.then(() => {
 					assert.equal(tr.succeeded, true, 'should have succeeded');
 					assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
@@ -40,9 +45,13 @@ describe('ConfigTransformTask tests', function () {
 							done(err);
 							return;
 						}
-						
+
 						const parsedContent = JSON.parse(fileContent);
-						assert.equal(parsedContent.InsuranceConfig.BuildVersion, '1.2.3.4', 'should have updated BuildVersion');
+						assert.equal(
+							parsedContent.InsuranceConfig.BuildVersion,
+							'1.2.3.4',
+							'should have updated BuildVersion',
+						);
 
 						fs.unlinkSync(filePath);
 						done();
@@ -58,7 +67,7 @@ describe('ConfigTransformTask tests', function () {
 	});
 
 	it('json transformation with whitespace should succeed', function (done: Mocha.Done) {
-		this.timeout(1000);
+		this.timeout(30000);
 
 		const tp: string = path.join(__dirname, 'json_whitespace.js');
 		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
@@ -78,7 +87,7 @@ describe('ConfigTransformTask tests', function () {
 				return;
 			}
 
-			tr.runAsync()
+			tr.runAsync(20)
 				.then(() => {
 					assert.equal(tr.succeeded, true, 'should have succeeded');
 					assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
@@ -89,9 +98,13 @@ describe('ConfigTransformTask tests', function () {
 							done(err);
 							return;
 						}
-						
+
 						const parsedContent = JSON.parse(fileContent);
-						assert.equal(parsedContent.InsuranceConfig.BuildVersion, '1.2.3.4', 'should have updated BuildVersion');
+						assert.equal(
+							parsedContent.InsuranceConfig.BuildVersion,
+							'1.2.3.4',
+							'should have updated BuildVersion',
+						);
 
 						fs.unlinkSync(filePath);
 						done();
@@ -107,7 +120,7 @@ describe('ConfigTransformTask tests', function () {
 	});
 
 	it('json transformation with BOM should succeed', function (done: Mocha.Done) {
-		this.timeout(1000);
+		this.timeout(30000);
 
 		const tp: string = path.join(__dirname, 'json_bom.js');
 		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
@@ -127,7 +140,7 @@ describe('ConfigTransformTask tests', function () {
 				return;
 			}
 
-			tr.runAsync()
+			tr.runAsync(20)
 				.then(() => {
 					assert.equal(tr.succeeded, true, 'should have succeeded');
 					assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
@@ -138,9 +151,13 @@ describe('ConfigTransformTask tests', function () {
 							done(err);
 							return;
 						}
-						
+
 						const parsedContent = JSON.parse(fileContent);
-						assert.equal(parsedContent.InsuranceConfig.BuildVersion, '1.2.3.4', 'should have updated BuildVersion');
+						assert.equal(
+							parsedContent.InsuranceConfig.BuildVersion,
+							'1.2.3.4',
+							'should have updated BuildVersion',
+						);
 
 						fs.unlinkSync(filePath);
 						done();
@@ -157,7 +174,7 @@ describe('ConfigTransformTask tests', function () {
 
 	// Test currently doesn't work (probably due to mocha and local file system)
 	it('flat file transformation should succeed', function (done: Mocha.Done) {
-		this.timeout(1000);
+		this.timeout(30000);
 
 		const tp: string = path.join(__dirname, 'flat_success.js');
 		const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
@@ -171,10 +188,11 @@ APP_NAME=UnitTests`;
 		fs.writeFile(filePath, content, err => {
 			if (err) {
 				console.error(err);
+				done(err);
+				return;
 			}
-		});
 
-		tr.runAsync()
+			tr.runAsync(20)
 			.then(() => {
 				assert.equal(tr.succeeded, true, 'should have succeeded');
 				assert.equal(tr.warningIssues.length, 0, 'should have no warnings');
@@ -192,13 +210,14 @@ APP_NAME=UnitTests`;
 					assert.equal(fileContent.includes('API_KEY'), true, 'should have added API_KEY');
 					assert.equal(fileContent.includes('APP_NAME=UnitTests'), true, 'should have kept APP_NAME');
 
+					// Clean up the test file after assertions
+					fs.unlinkSync(filePath);
 					done();
 				});
-
-				fs.unlinkSync(filePath);
 			})
 			.catch(error => {
 				done(error);
 			});
+		});
 	});
 });

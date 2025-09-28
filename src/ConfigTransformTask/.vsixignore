@@ -1,0 +1,12 @@
+node_modules/
+*.ts
+*.map
+tsconfig.json
+tests/
+src/
+.git*
+.vscode/
+.prettierrc
+biome.json
+*.md
+package-lock.json

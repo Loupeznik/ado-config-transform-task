@@ -1,5 +1,5 @@
 import tmrm = require('azure-pipelines-task-lib/mock-run');
-import path = require('path');
+import path = require('node:path');
 import ma = require('azure-pipelines-task-lib/mock-answer');
 
 const taskPath = path.join(__dirname, '..', 'index.js');

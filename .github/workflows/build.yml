@@ -23,15 +23,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-      - name: Install dependencies and build package
+      - name: Run linting and tests
         run: |
-          npm install -g tfx-cli typescript@4.6.3
           npm install
+          npm run lint
           npm run build
+          npm test
         working-directory: src/ConfigTransformTask
-      - name: Build VSIX
-        run: tfx extension create --manifest-globs vss-extension.json
-        working-directory: src
+      - name: Build VSIX package
+        run: |
+          npm install -g tfx-cli
+          npm run build:vsix
+        working-directory: src/ConfigTransformTask
       - name: Publish artifact
         if: ${{ github.event_name != 'pull_request'}}
         uses: actions/upload-artifact@v4

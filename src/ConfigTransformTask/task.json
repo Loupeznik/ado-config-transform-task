@@ -9,17 +9,17 @@
 	"author": "Dominik Zarsky",
 	"version": {
 		"Major": 1,
-		"Minor": 2,
-		"Patch": 7
+		"Minor": 3,
+		"Patch": 0
 	},
 	"visibility": ["Build", "Release"],
-	"instanceNameFormat": "Transform $(sourcePath)",
+	"instanceNameFormat": "Transform $(targetPath)",
 	"inputs": [
 		{
 			"name": "fileType",
 			"type": "pickList",
 			"label": "File type",
-			"defaultValue": "JSON",
+			"defaultValue": "json",
 			"required": true,
 			"helpMarkDown": "Config file type",
 			"options": {
@@ -63,10 +63,10 @@
 		}
 	],
 	"execution": {
-		"Node16": {
+		"Node20_1": {
 			"target": "dist/index.js"
 		}
 	},
-	"minimumAgentVersion": "2.144.0",
+	"minimumAgentVersion": "3.220.0",
 	"runsOn": ["Agent", "DeploymentGroup"]
 }
