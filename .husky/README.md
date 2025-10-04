@@ -20,4 +20,11 @@ If any check fails, the commit will be aborted.
 
 ### Setup
 
-Hooks are automatically installed when you run `npm install` in `src/ConfigTransformTask` (via the `prepare` script).
+After cloning the repository and running `npm install` in `src/ConfigTransformTask`, you need to install the git hooks once:
+
+```bash
+cd src/ConfigTransformTask
+npx husky
+```
+
+This only needs to be done once per clone. The hooks will then run automatically on every commit.

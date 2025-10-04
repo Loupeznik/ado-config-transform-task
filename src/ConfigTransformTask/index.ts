@@ -1,24 +1,24 @@
-import tl = require('azure-pipelines-task-lib/task');
+import tl = require("azure-pipelines-task-lib/task");
 
-import { readFileSync, writeFileSync } from 'node:fs';
-import { checkFileValidity, type FileType } from './helpers/fileHelpers';
-import transformFlatFile from './transformations/flat';
-import transformJson from './transformations/json';
-import transformYaml from './transformations/yaml';
+import { readFileSync, writeFileSync } from "node:fs";
+import { checkFileValidity, type FileType } from "./helpers/fileHelpers";
+import transformFlatFile from "./transformations/flat";
+import transformJson from "./transformations/json";
+import transformYaml from "./transformations/yaml";
 
 type Inputs = {
 	FileType: FileType;
 	TargetPath: string;
 	Transformations: string;
-	Separator?: '=' | ':';
+	Separator?: "=" | ":";
 };
 
 async function run() {
 	try {
 		const inputs: Inputs = {
-			FileType: tl.getInput('FileType', true) as FileType,
-			TargetPath: tl.getInput('TargetPath', true) as string,
-			Transformations: tl.getInput('Transformations', true) as string,
+			FileType: tl.getInput("FileType", true) as FileType,
+			TargetPath: tl.getInput("TargetPath", true) as string,
+			Transformations: tl.getInput("Transformations", true) as string,
 		};
 
 		if (!tl.exist(inputs.TargetPath)) {
@@ -30,22 +30,26 @@ async function run() {
 		}
 
 		switch (inputs.FileType) {
-			case 'json': {
-				const targetJson = readFileSync(inputs.TargetPath, 'utf8');
+			case "json": {
+				const targetJson = readFileSync(inputs.TargetPath, "utf8");
 				const resultJson = transformJson(targetJson, inputs.Transformations);
 				writeFileSync(inputs.TargetPath, resultJson);
 				break;
 			}
-			case 'yaml': {
-				const targetYaml = readFileSync(inputs.TargetPath, 'utf8');
+			case "yaml": {
+				const targetYaml = readFileSync(inputs.TargetPath, "utf8");
 				const resultYaml = transformYaml(targetYaml, inputs.Transformations);
 				writeFileSync(inputs.TargetPath, resultYaml);
 				break;
 			}
-			case 'flat': {
-				const separator = tl.getInput('Separator', true) as '=' | ':';
-				const target = readFileSync(inputs.TargetPath, 'utf8');
-				const result = transformFlatFile(target, inputs.Transformations, separator);
+			case "flat": {
+				const separator = tl.getInput("Separator", true) as "=" | ":";
+				const target = readFileSync(inputs.TargetPath, "utf8");
+				const result = transformFlatFile(
+					target,
+					inputs.Transformations,
+					separator,
+				);
 				writeFileSync(inputs.TargetPath, result);
 				break;
 			}
@@ -56,7 +60,10 @@ async function run() {
 		tl.setResult(tl.TaskResult.Succeeded, `Transformed ${inputs.TargetPath}`);
 	} catch (err: unknown) {
 		const errorMessage = err instanceof Error ? err.message : String(err);
-		tl.setResult(tl.TaskResult.Failed, `An error has occured during transformation - ${errorMessage}`);
+		tl.setResult(
+			tl.TaskResult.Failed,
+			`An error has occured during transformation - ${errorMessage}`,
+		);
 	}
 }
 

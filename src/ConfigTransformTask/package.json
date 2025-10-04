@@ -13,8 +13,7 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
 		"format": "biome format --write .",
-		"check": "biome check .",
-		"prepare": "cd ../.. && husky"
+		"check": "biome check ."
 	},
 	"keywords": [],
 	"author": "Dominik Zarsky",

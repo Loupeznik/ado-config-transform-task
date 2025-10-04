@@ -2,6 +2,20 @@
 
 This tool is useful for performing configuration transformations on multiple file types including JSON, XML, YAML and flat configuration files (like .env files).
 
+## Development Setup
+
+After cloning the repository:
+
+```bash
+cd src/ConfigTransformTask
+npm install
+
+# Install git hooks (pre-commit checks)
+npx husky
+```
+
+The pre-commit hooks will automatically run biome linting and TypeScript type checking before each commit.
+
 ## Manual testing
 
 ### PowerShell (Windows)
