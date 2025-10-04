@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+cd src/ConfigTransformTask
+
+echo "Running biome linting..."
+npm run lint
+
+echo "Running TypeScript checks..."
+npm run build
