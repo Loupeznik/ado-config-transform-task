@@ -14,7 +14,7 @@ The pre-commit hook runs automatically before each commit and performs:
 When you run `git commit`, the pre-commit hook will:
 - Navigate to `src/ConfigTransformTask`
 - Run `npm run lint` to check code with Biome
-- Run `npm run build` to compile TypeScript
+- Run `npx tsc --noEmit` to type-check TypeScript (without generating files)
 
 If any check fails, the commit will be aborted.
 

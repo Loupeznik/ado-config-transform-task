@@ -6,4 +6,4 @@ echo "Running biome linting..."
 npm run lint
 
 echo "Running TypeScript checks..."
-npm run build
+npx tsc --noEmit
