@@ -57,14 +57,7 @@ function transformJsonInternal(target: JsonObject, transformations: Transformati
 					continue;
 				}
 
-				if (shouldCreateArray(nextKey)) {
-					if (!Array.isArray(currentTarget[index])) {
-						currentTarget[index] =
-							currentTarget[index] === undefined ? [] : [currentTarget[index] as JsonValue];
-					}
-				} else if (!isContainer(currentTarget[index]) || Array.isArray(currentTarget[index])) {
-					currentTarget[index] = {};
-				}
+				currentTarget[index] = ensureContainer(currentTarget[index], nextKey);
 
 				currentTarget = currentTarget[index] as JsonContainer;
 				continue;
@@ -73,14 +66,7 @@ function transformJsonInternal(target: JsonObject, transformations: Transformati
 			if (isLastKey) {
 				currentTarget[key] = transformations[transformKey];
 			} else {
-				if (shouldCreateArray(nextKey)) {
-					if (!Array.isArray(currentTarget[key])) {
-						currentTarget[key] =
-							currentTarget[key] === undefined ? [] : [currentTarget[key] as JsonValue];
-					}
-				} else if (!isContainer(currentTarget[key]) || Array.isArray(currentTarget[key])) {
-					currentTarget[key] = {};
-				}
+				currentTarget[key] = ensureContainer(currentTarget[key], nextKey);
 				currentTarget = currentTarget[key] as JsonContainer;
 			}
 		}
@@ -95,4 +81,20 @@ function isContainer(value: JsonValue | undefined): value is JsonContainer {
 
 function shouldCreateArray(key: string | undefined) {
 	return key !== undefined && /^\d+$/.test(key);
+}
+
+function ensureContainer(value: JsonValue | undefined, nextKey: string | undefined): JsonContainer {
+	if (shouldCreateArray(nextKey)) {
+		if (Array.isArray(value)) {
+			return value;
+		}
+
+		return value === undefined ? [] : [value];
+	}
+
+	if (isContainer(value) && !Array.isArray(value)) {
+		return value;
+	}
+
+	return {};
 }

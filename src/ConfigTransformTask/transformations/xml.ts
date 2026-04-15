@@ -431,10 +431,7 @@ function appendJsonValueToElement(
 }
 
 function stringifyXmlValue(value: JsonValue) {
-	if (
-		typeof value === "object" &&
-		value !== null
-	) {
+	if (typeof value === "object" && value !== null) {
 		throw new Error("XML attribute and text values must be primitive values");
 	}
 
