@@ -1,6 +1,7 @@
 type JsonValue = string | number | boolean | null | JsonObject | JsonValue[];
 type JsonObject = { [key: string]: JsonValue };
 type TransformationsObject = { [key: string]: JsonValue };
+type JsonContainer = JsonObject | JsonValue[];
 
 function removeBom(str: string): string {
 	if (str.charCodeAt(0) === 0xfeff) {
@@ -38,20 +39,60 @@ export default function transformJson(target: string, transformations: string) {
 function transformJsonInternal(target: JsonObject, transformations: TransformationsObject): JsonObject {
 	Object.keys(transformations).forEach(transformKey => {
 		const keys = transformKey.split('.');
-		let currentTarget: JsonObject = target;
+		let currentTarget: JsonContainer = target;
 
 		for (let i = 0; i < keys.length; i++) {
 			const key = keys[i];
-			if (i === keys.length - 1) {
+			const isLastKey = i === keys.length - 1;
+			const nextKey = keys[i + 1];
+
+			if (Array.isArray(currentTarget)) {
+				const index = Number(key);
+				if (!Number.isInteger(index) || index < 0) {
+					throw new Error(`Invalid array index in transformation path: ${transformKey}`);
+				}
+
+				if (isLastKey) {
+					currentTarget[index] = transformations[transformKey];
+					continue;
+				}
+
+				if (shouldCreateArray(nextKey)) {
+					if (!Array.isArray(currentTarget[index])) {
+						currentTarget[index] =
+							currentTarget[index] === undefined ? [] : [currentTarget[index] as JsonValue];
+					}
+				} else if (!isContainer(currentTarget[index]) || Array.isArray(currentTarget[index])) {
+					currentTarget[index] = {};
+				}
+
+				currentTarget = currentTarget[index] as JsonContainer;
+				continue;
+			}
+
+			if (isLastKey) {
 				currentTarget[key] = transformations[transformKey];
 			} else {
-				if (!currentTarget[key] || typeof currentTarget[key] !== 'object' || Array.isArray(currentTarget[key])) {
+				if (shouldCreateArray(nextKey)) {
+					if (!Array.isArray(currentTarget[key])) {
+						currentTarget[key] =
+							currentTarget[key] === undefined ? [] : [currentTarget[key] as JsonValue];
+					}
+				} else if (!isContainer(currentTarget[key]) || Array.isArray(currentTarget[key])) {
 					currentTarget[key] = {};
 				}
-				currentTarget = currentTarget[key] as JsonObject;
+				currentTarget = currentTarget[key] as JsonContainer;
 			}
 		}
 	});
 
 	return target;
+}
+
+function isContainer(value: JsonValue | undefined): value is JsonContainer {
+	return typeof value === 'object' && value !== null;
+}
+
+function shouldCreateArray(key: string | undefined) {
+	return key !== undefined && /^\d+$/.test(key);
 }

@@ -1,4 +1,10 @@
-import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
+import {
+	DOMParser,
+	XMLSerializer,
+	type Attr,
+	type Document,
+	type Element,
+} from "@xmldom/xmldom";
 import transformJson from "./json";
 
 type JsonValue =
@@ -31,7 +37,7 @@ type ParsedXdtLocator =
 	| { type: "default" }
 	| { type: "match"; attributes: string[] };
 
-export type XmlTransformationMode = "object" | "xdt-inline" | "xdt-file";
+export type XmlTransformationMode = "object" | "xdtInline" | "xdtFile";
 
 export default function transformXml(
 	targetXml: string,
@@ -41,8 +47,8 @@ export default function transformXml(
 	switch (mode) {
 		case "object":
 			return transformXmlObject(targetXml, transformations);
-		case "xdt-inline":
-		case "xdt-file":
+		case "xdtInline":
+		case "xdtFile":
 			return transformXmlWithXdt(targetXml, transformations);
 		default:
 			throw new Error(`Unsupported XML transformation mode: ${mode}`);
@@ -65,18 +71,16 @@ function transformXmlWithXdt(targetXml: string, xdtXml: string) {
 	const xmlDeclaration = extractXmlDeclaration(targetXml);
 	const targetDocument = parseXmlDocument(targetXml, "target XML");
 	const transformDocument = parseXmlDocument(xdtXml, "XDT XML");
+	const targetRoot = requireDocumentElement(targetDocument, "target XML");
+	const transformRoot = requireDocumentElement(transformDocument, "XDT XML");
 
-	if (targetDocument.documentElement.tagName !== transformDocument.documentElement.tagName) {
+	if (targetRoot.tagName !== transformRoot.tagName) {
 		throw new Error(
-			`XDT root element <${transformDocument.documentElement.tagName}> does not match target root <${targetDocument.documentElement.tagName}>`,
+			`XDT root element <${transformRoot.tagName}> does not match target root <${targetRoot.tagName}>`,
 		);
 	}
 
-	applyXdtChildren(
-		targetDocument,
-		targetDocument.documentElement,
-		transformDocument.documentElement,
-	);
+	applyXdtChildren(targetDocument, targetRoot, transformRoot);
 
 	return serializeXmlDocument(targetDocument, xmlDeclaration);
 }
@@ -319,8 +323,10 @@ function cloneWithoutXdt(targetDocument: Document, sourceElement: Element) {
 }
 
 function xmlDocumentToObject(document: Document): JsonObject {
+	const rootElement = requireDocumentElement(document, "target XML");
+
 	return {
-		[document.documentElement.tagName]: elementToJsonValue(document.documentElement),
+		[rootElement.tagName]: elementToJsonValue(rootElement),
 	};
 }
 
@@ -373,7 +379,8 @@ function xmlObjectToDocument(xmlObject: JsonObject) {
 	const [rootName, rootValue] = rootEntries[0];
 	const document = new DOMParser().parseFromString("<placeholder />", "text/xml");
 	const rootElement = document.createElement(rootName);
-	document.replaceChild(rootElement, document.documentElement);
+	const currentRootElement = requireDocumentElement(document, "generated XML");
+	document.replaceChild(rootElement, currentRootElement);
 	appendJsonValueToElement(document, rootElement, rootValue);
 
 	return document;
@@ -437,10 +444,10 @@ function stringifyXmlValue(value: JsonValue) {
 function parseXmlDocument(xml: string, sourceDescription: string) {
 	const parserErrors: string[] = [];
 	const parser = new DOMParser({
-		errorHandler: {
-			error: (message: string) => parserErrors.push(message),
-			fatalError: (message: string) => parserErrors.push(message),
-			warning: () => undefined,
+		onError: (level, message) => {
+			if (level !== "warning") {
+				parserErrors.push(message);
+			}
 		},
 	});
 	const document = parser.parseFromString(removeBom(xml), "text/xml");
@@ -461,6 +468,14 @@ function serializeXmlDocument(document: Document, xmlDeclaration?: string) {
 
 function extractXmlDeclaration(xml: string) {
 	return removeBom(xml).match(XML_DECLARATION_PATTERN)?.[1];
+}
+
+function requireDocumentElement(document: Document, sourceDescription: string) {
+	if (!document.documentElement) {
+		throw new Error(`Failed to parse ${sourceDescription}: missing document element`);
+	}
+
+	return document.documentElement;
 }
 
 function getElementTextContent(element: Element) {

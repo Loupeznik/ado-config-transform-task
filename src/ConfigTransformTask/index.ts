@@ -34,8 +34,9 @@ async function run() {
 
 		switch (inputs.FileType) {
 			case "json": {
+				const transformations = requireTransformations(inputs.Transformations);
 				const targetJson = readFileSync(inputs.TargetPath, "utf8");
-				const resultJson = transformJson(targetJson, inputs.Transformations);
+				const resultJson = transformJson(targetJson, transformations);
 				writeFileSync(inputs.TargetPath, resultJson);
 				break;
 			}
@@ -61,7 +62,7 @@ async function run() {
 				const targetXml = readFileSync(inputs.TargetPath, "utf8");
 
 				let xmlTransformations = "";
-				if (xmlTransformationMode === "xdt-file") {
+				if (xmlTransformationMode === "xdtFile") {
 					const xmlTransformationFilePath = tl.getInput(
 						"XmlTransformationFilePath",
 						true,

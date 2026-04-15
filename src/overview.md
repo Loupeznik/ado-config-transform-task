@@ -4,12 +4,17 @@ This tool is useful for performing configuration transformations on multiple fil
 
 ## Usage
 
-There are three parameters that need to be set:
+There are three core parameters that need to be set:
 
 - `TargetFile` - The directory to write the transformed files to
 - `FileType` - The type of file to transform. Currently supported are `json`, `xml`, `yaml` and `flat`
 - `Transformations` - A list of transformations to perform. Transformations are defined as a JSON object, referencing keys and values to be
     replaced in the target file. The key indicates the JSON path to the desired key in the target file, the value is the value to be set.
+
+For XML files, you can also choose:
+
+- `XmlTransformationMode` - `object`, `xdtInline`, or `xdtFile`
+- `XmlTransformationFilePath` - required when `XmlTransformationMode` is `xdtFile`
 
 ### JSON and YAML transformation
 
@@ -82,3 +87,65 @@ ConnectionStrings:
     Default: Server=postgresql.database;Port=5432;Database=MyApp;User Id=admin;Password=SecretPa$$word;
 AdminPassword: SuperSecretPa$$word
 ```
+
+### XML transformation
+
+XML supports two transformation styles:
+
+1. **Inline transform object** - uses the same dot-path approach as JSON and YAML. Element attributes are addressed with an `@` prefix and repeated sibling elements can be targeted with array indexes.
+2. **XDT** - supports inline XDT content or an external XDT file path.
+
+#### XML inline transform object example
+
+For the following target file:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <appSettings>
+    <add key="Environment" value="development" />
+  </appSettings>
+  <application>
+    <name>Legacy App</name>
+  </application>
+</configuration>
+```
+
+Use the following transformation object:
+
+```json
+{
+  "configuration.appSettings.add.0.@value": "production",
+  "configuration.application.name": "Config Transform Task"
+}
+```
+
+The result will be:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <appSettings>
+    <add key="Environment" value="production"/>
+  </appSettings>
+  <application>
+    <name>Config Transform Task</name>
+  </application>
+</configuration>
+```
+
+#### XML XDT example
+
+Use `XmlTransformationMode = xdtInline` and set `Transformations` to:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <appSettings>
+    <add key="Environment" value="production" xdt:Locator="Match(key)" xdt:Transform="SetAttributes(value)" />
+    <add key="FeatureFlag" value="enabled" xdt:Transform="Insert" />
+  </appSettings>
+</configuration>
+```
+
+Or set `XmlTransformationMode = xdtFile` and provide the same content in `XmlTransformationFilePath`.
