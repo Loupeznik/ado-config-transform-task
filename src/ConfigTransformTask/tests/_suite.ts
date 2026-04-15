@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import * as path from "node:path";
 import { DOMParser } from "@xmldom/xmldom";
 import * as ttm from "azure-pipelines-task-lib/mock-test";
+import { checkFileValidity } from "../helpers/fileHelpers";
 import transformJson from "../transformations/json";
 import transformXml from "../transformations/xml";
 
@@ -142,6 +143,12 @@ APP_NAME=UnitTests`,
 		);
 		assert.equal(getSingleElementText(result, "name"), "Modern App");
 		assert.equal(result.startsWith('<?xml version="1.0" encoding="utf-8"?>'), true);
+	});
+
+	it("xml file validation should accept xml and config extensions only", () => {
+		assert.equal(checkFileValidity("/tmp/appsettings.xml", "xml"), true);
+		assert.equal(checkFileValidity("/tmp/Web.config", "xml"), true);
+		assert.equal(checkFileValidity("/tmp/appsettings.json", "xml"), false);
 	});
 
 	it("xml object transformation should surface JSON parse errors", () => {

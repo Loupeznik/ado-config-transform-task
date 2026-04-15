@@ -1,5 +1,7 @@
 export type FileType = 'json' | 'xml' | 'yaml' | 'flat';
 
+const xmlExtensions = ['xml', 'config'];
+
 export const checkFileValidity = (filePath: string, type: FileType) => {
 	const extension = getExtension(filePath).toLowerCase();
 
@@ -7,7 +9,7 @@ export const checkFileValidity = (filePath: string, type: FileType) => {
 		case 'json':
 			return extension === 'json';
 		case 'xml':
-			return true;
+			return xmlExtensions.includes(extension);
 		case 'yaml':
 			return extension === 'yaml' || extension === 'yml';
 		default:
