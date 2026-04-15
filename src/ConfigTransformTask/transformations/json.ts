@@ -39,35 +39,35 @@ export default function transformJson(target: string, transformations: string) {
 function transformJsonInternal(target: JsonObject, transformations: TransformationsObject): JsonObject {
 	Object.keys(transformations).forEach(transformKey => {
 		const keys = transformKey.split('.');
-		let currentTarget: JsonContainer = target;
+		let currentContainer: JsonContainer = target;
 
 		for (let i = 0; i < keys.length; i++) {
 			const key = keys[i];
 			const isLastKey = i === keys.length - 1;
 			const nextKey = keys[i + 1];
 
-			if (Array.isArray(currentTarget)) {
+			if (Array.isArray(currentContainer)) {
 				const index = Number(key);
 				if (!Number.isInteger(index) || index < 0) {
 					throw new Error(`Invalid array index in transformation path: ${transformKey}`);
 				}
 
 				if (isLastKey) {
-					currentTarget[index] = transformations[transformKey];
+					currentContainer[index] = transformations[transformKey];
 					continue;
 				}
 
-				currentTarget[index] = ensureContainer(currentTarget[index], nextKey);
+				currentContainer[index] = ensureContainer(currentContainer[index], nextKey);
 
-				currentTarget = currentTarget[index] as JsonContainer;
+				currentContainer = currentContainer[index] as JsonContainer;
 				continue;
 			}
 
 			if (isLastKey) {
-				currentTarget[key] = transformations[transformKey];
+				currentContainer[key] = transformations[transformKey];
 			} else {
-				currentTarget[key] = ensureContainer(currentTarget[key], nextKey);
-				currentTarget = currentTarget[key] as JsonContainer;
+				currentContainer[key] = ensureContainer(currentContainer[key], nextKey);
+				currentContainer = currentContainer[key] as JsonContainer;
 			}
 		}
 	});
@@ -79,12 +79,12 @@ function isContainer(value: JsonValue | undefined): value is JsonContainer {
 	return typeof value === 'object' && value !== null;
 }
 
-function shouldCreateArray(key: string | undefined) {
+function isArrayIndex(key: string | undefined) {
 	return key !== undefined && /^\d+$/.test(key);
 }
 
 function ensureContainer(value: JsonValue | undefined, nextKey: string | undefined): JsonContainer {
-	if (shouldCreateArray(nextKey)) {
+	if (isArrayIndex(nextKey)) {
 		if (Array.isArray(value)) {
 			return value;
 		}
