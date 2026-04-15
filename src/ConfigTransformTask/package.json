@@ -29,8 +29,11 @@
 		"@types/node": "^20.19.19",
 		"@types/q": "^1.5.8",
 		"husky": "^9.1.7",
-		"mocha": "^10.7.3",
+		"mocha": "^11.7.5",
 		"sync-request": "^6.1.0",
 		"typescript": "^5.9.2"
+	},
+	"overrides": {
+		"glob": "^13.0.6"
 	}
 }
