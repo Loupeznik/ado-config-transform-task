@@ -10,9 +10,12 @@
 	"version": {
 		"Major": 1,
 		"Minor": 3,
-		"Patch": 1
+		"Patch": 2
 	},
-	"visibility": ["Build", "Release"],
+	"visibility": [
+		"Build",
+		"Release"
+	],
 	"instanceNameFormat": "Transform $(targetPath)",
 	"inputs": [
 		{
@@ -71,5 +74,8 @@
 		}
 	},
 	"minimumAgentVersion": "3.220.0",
-	"runsOn": ["Agent", "DeploymentGroup"]
+	"runsOn": [
+		"Agent",
+		"DeploymentGroup"
+	]
 }
