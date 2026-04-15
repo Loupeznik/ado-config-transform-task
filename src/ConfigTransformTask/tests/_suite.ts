@@ -93,6 +93,17 @@ describe("ConfigTransformTask tests", () => {
 		);
 	});
 
+	it("json transformation should allow sparse array growth", () => {
+		const result = transformJson(
+			'{"services":[{"name":"api"}]}',
+			'{"services.5.name":"worker","services.5.port":8080}',
+		);
+
+		const parsedResult = JSON.parse(result);
+		assert.equal(parsedResult.services[5].name, "worker");
+		assert.equal(parsedResult.services[5].port, 8080);
+	});
+
 	it("flat file transformation should succeed", async () => {
 		await runTaskTest({
 			scriptName: "flat_success.js",

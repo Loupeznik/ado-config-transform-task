@@ -39,6 +39,10 @@ type ParsedXdtLocator =
 
 export type XmlTransformationMode = "object" | "xdtInline" | "xdtFile";
 
+/**
+ * Transforms XML content using either the inline JSON-style transform object (`object` mode)
+ * or XDT XML content (`xdtInline` and `xdtFile` modes).
+ */
 export default function transformXml(
 	targetXml: string,
 	transformations: string,

@@ -66,6 +66,10 @@ function transformJsonInternal(target: JsonObject, transformations: Transformati
 			if (isLastKey) {
 				currentContainer[key] = transformations[transformKey];
 			} else {
+				if (Array.isArray(currentContainer[key]) && !isArrayIndex(nextKey)) {
+					throw new Error(`Invalid array index in transformation path: ${transformKey}`);
+				}
+
 				currentContainer[key] = ensureContainer(currentContainer[key], nextKey);
 				currentContainer = currentContainer[key] as JsonContainer;
 			}
