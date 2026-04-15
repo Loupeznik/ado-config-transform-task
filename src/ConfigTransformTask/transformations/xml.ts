@@ -458,9 +458,14 @@ function parseXmlDocument(xml: string, sourceDescription: string) {
 
 function serializeXmlDocument(document: Document, xmlDeclaration?: string) {
 	const serializedDocument = new XMLSerializer().serializeToString(document);
-	return xmlDeclaration
-		? `${xmlDeclaration}${serializedDocument.startsWith("<?xml") ? "" : "\n"}${serializedDocument.replace(XML_DECLARATION_PATTERN, "")}`
-		: serializedDocument;
+	if (!xmlDeclaration) {
+		return serializedDocument;
+	}
+
+	const serializedBody = serializedDocument.replace(XML_DECLARATION_PATTERN, "");
+	const separator = serializedDocument.startsWith("<?xml") ? "" : "\n";
+
+	return `${xmlDeclaration}${separator}${serializedBody}`;
 }
 
 function extractXmlDeclaration(xml: string) {

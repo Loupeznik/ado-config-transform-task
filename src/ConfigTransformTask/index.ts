@@ -34,21 +34,21 @@ async function run() {
 
 		switch (inputs.FileType) {
 			case "json": {
-				const transformations = requireTransformations(inputs.Transformations);
+				const transformations = ensureTransformations(inputs.Transformations);
 				const targetJson = readFileSync(inputs.TargetPath, "utf8");
 				const resultJson = transformJson(targetJson, transformations);
 				writeFileSync(inputs.TargetPath, resultJson);
 				break;
 			}
 			case "yaml": {
-				const transformations = requireTransformations(inputs.Transformations);
+				const transformations = ensureTransformations(inputs.Transformations);
 				const targetYaml = readFileSync(inputs.TargetPath, "utf8");
 				const resultYaml = transformYaml(targetYaml, transformations);
 				writeFileSync(inputs.TargetPath, resultYaml);
 				break;
 			}
 			case "flat": {
-				const transformations = requireTransformations(inputs.Transformations);
+				const transformations = ensureTransformations(inputs.Transformations);
 				const separator = tl.getInput("Separator", true) as "=" | ":";
 				const target = readFileSync(inputs.TargetPath, "utf8");
 				const result = transformFlatFile(target, transformations, separator);
@@ -76,7 +76,7 @@ async function run() {
 
 					xmlTransformations = readFileSync(xmlTransformationFilePath, "utf8");
 				} else {
-					xmlTransformations = requireTransformations(inputs.Transformations);
+					xmlTransformations = ensureTransformations(inputs.Transformations);
 				}
 
 				const resultXml = transformXml(
@@ -101,7 +101,7 @@ async function run() {
 	}
 }
 
-function requireTransformations(transformations?: string) {
+function ensureTransformations(transformations?: string) {
 	if (!transformations || transformations.trim().length === 0) {
 		throw new Error("Transformations input is required");
 	}

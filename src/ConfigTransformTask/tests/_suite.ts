@@ -82,6 +82,17 @@ describe("ConfigTransformTask tests", () => {
 		});
 	});
 
+	it("json transformation should reject invalid array indexes", () => {
+		assert.throws(
+			() => transformJson('{"services":[{"name":"api"}]}', '{"services.-1.name":"broken"}'),
+			/Invalid array index/,
+		);
+		assert.throws(
+			() => transformJson('{"services":[{"name":"api"}]}', '{"services.one.name":"broken"}'),
+			/Invalid array index/,
+		);
+	});
+
 	it("flat file transformation should succeed", async () => {
 		await runTaskTest({
 			scriptName: "flat_success.js",
