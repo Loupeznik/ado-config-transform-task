@@ -1,13 +1,15 @@
 export type FileType = 'json' | 'xml' | 'yaml' | 'flat';
 
-// TODO: add xml and flat file support
-// TODO: check also based on content format
 export const checkFileValidity = (filePath: string, type: FileType) => {
+	const extension = getExtension(filePath).toLowerCase();
+
 	switch (type) {
 		case 'json':
-			return getExtension(filePath) === 'json';
+			return extension === 'json';
+		case 'xml':
+			return true;
 		case 'yaml':
-			return getExtension(filePath) === 'yaml' || getExtension(filePath) === 'yml';
+			return extension === 'yaml' || extension === 'yml';
 		default:
 			return true;
 	}
