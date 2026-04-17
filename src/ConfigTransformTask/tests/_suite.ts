@@ -264,5 +264,7 @@ database:
 	it('file validity should support uppercase extensions', () => {
 		assert.equal(checkFileValidity('test.JSON', 'json'), true, 'JSON extension should be case insensitive');
 		assert.equal(checkFileValidity('test.YmL', 'yaml'), true, 'YAML extension should be case insensitive');
+		assert.equal(checkFileValidity('test.env', 'flat'), true, 'flat files should pass extension validation');
+		assert.equal(checkFileValidity('test.xml', 'xml'), true, 'xml files should pass extension validation');
 	});
 });

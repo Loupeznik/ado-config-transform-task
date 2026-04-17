@@ -53,7 +53,7 @@ export default function transformFlatFile(target: string, transformations: strin
 
 	const transformedLines = lines.map(line => {
 		const trimmedLine = line.trimStart();
-		if (trimmedLine.startsWith('#') || trimmedLine.startsWith(';') || line.trim() === '') {
+		if (trimmedLine.startsWith('#') || trimmedLine.startsWith(';') || trimmedLine === '') {
 			return line;
 		}
 
