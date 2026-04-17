@@ -9,8 +9,8 @@
 	"author": "Dominik Zarsky",
 	"version": {
 		"Major": 1,
-		"Minor": 3,
-		"Patch": 2
+		"Minor": 4,
+		"Patch": 0
 	},
 	"visibility": [
 		"Build",
@@ -27,6 +27,7 @@
 			"helpMarkDown": "Config file type",
 			"options": {
 				"json": "JSON",
+				"xml": "XML",
 				"yaml": "YAML",
 				"flat": "FlatFile"
 			}
@@ -44,12 +45,35 @@
 			"type": "multiLine",
 			"label": "Transformations",
 			"defaultValue": "{\n  \"AppName\": \"MyApp\",\n  \"ConnectionStrings.Default\": \"Server=postgresql.database;Port=5432;Database=MyApp;User Id=admin;Password=SecretPa$$word;\"\n}",
-			"required": true,
-			"helpMarkDown": "JSON representation of transformation.",
+			"required": false,
+			"helpMarkDown": "JSON transform object for JSON, YAML, flat files, and XML object mode. For XML inline XDT mode, provide the full XDT document here.",
 			"properties": {
 				"resizable": true,
 				"rows": "15"
 			}
+		},
+		{
+			"name": "xmlTransformationMode",
+			"type": "pickList",
+			"label": "XML transformation mode",
+			"defaultValue": "object",
+			"required": false,
+			"helpMarkDown": "Choose whether XML uses the inline transform object format, inline XDT, or an external XDT file.",
+			"options": {
+				"object": "Inline transform object",
+				"xdtInline": "Inline XDT",
+				"xdtFile": "External XDT file"
+			},
+			"visibleRule": "fileType = xml"
+		},
+		{
+			"name": "xmlTransformationFilePath",
+			"type": "filePath",
+			"label": "XML XDT file path",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Path to the external XDT file to apply when XML transformation mode is set to External XDT file.",
+			"visibleRule": "fileType = xml && xmlTransformationMode = xdtFile"
 		},
 		{
 			"name": "separator",

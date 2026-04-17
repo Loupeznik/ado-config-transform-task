@@ -1,6 +1,6 @@
 # ADO Config Transform Task
 
-This tool is useful for performing configuration transformations on multiple file types including JSON, XML, YAML and flat configuration files (like .env files).
+This tool is useful for performing configuration transformations on JSON, XML, YAML, and flat configuration files (like `.env` files).
 
 ## Development Setup
 
@@ -139,4 +139,122 @@ npm run build:dev
 node dist/index.js
 
 Get-Content test-config.yaml
+```
+
+#### XML Configuration Test (inline object mode)
+
+**Bash:**
+```bash
+cd src/ConfigTransformTask
+
+export INPUT_TargetPath="$(pwd)/test-config.xml"
+export INPUT_FileType="xml"
+export INPUT_XmlTransformationMode="object"
+export INPUT_Transformations='{"configuration.appSettings.add.0.@value":"production","configuration.application.name":"Config Transform Task"}'
+
+cat > test-config.xml << EOF
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <appSettings>
+    <add key="Environment" value="development" />
+  </appSettings>
+  <application>
+    <name>Legacy App</name>
+  </application>
+</configuration>
+EOF
+
+npm run build:dev
+node dist/index.js
+
+cat test-config.xml
+```
+
+**PowerShell:**
+```powershell
+cd src/ConfigTransformTask
+
+$env:INPUT_TargetPath="$(Get-Location)\test-config.xml"
+$env:INPUT_FileType="xml"
+$env:INPUT_XmlTransformationMode="object"
+$env:INPUT_Transformations='{"configuration.appSettings.add.0.@value":"production","configuration.application.name":"Config Transform Task"}'
+
+@"
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <appSettings>
+    <add key="Environment" value="development" />
+  </appSettings>
+  <application>
+    <name>Legacy App</name>
+  </application>
+</configuration>
+"@ | Out-File -FilePath test-config.xml -Encoding utf8
+
+npm run build:dev
+node dist/index.js
+
+Get-Content test-config.xml
+```
+
+#### XML Configuration Test (inline XDT mode)
+
+**Bash:**
+```bash
+cd src/ConfigTransformTask
+
+export INPUT_TargetPath="$(pwd)/test-config.xml"
+export INPUT_FileType="xml"
+export INPUT_XmlTransformationMode="xdtInline"
+export INPUT_Transformations='<?xml version="1.0" encoding="utf-8"?><configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform"><appSettings><add key="Environment" value="production" xdt:Locator="Match(key)" xdt:Transform="SetAttributes(value)" /><add key="FeatureFlag" value="enabled" xdt:Transform="Insert" /></appSettings></configuration>'
+
+cat > test-config.xml << EOF
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <appSettings>
+    <add key="Environment" value="development" />
+  </appSettings>
+</configuration>
+EOF
+
+npm run build:dev
+node dist/index.js
+
+cat test-config.xml
+```
+
+#### XML Configuration Test (external XDT file)
+
+**Bash:**
+```bash
+cd src/ConfigTransformTask
+
+export INPUT_TargetPath="$(pwd)/test-config.xml"
+export INPUT_FileType="xml"
+export INPUT_XmlTransformationMode="xdtFile"
+export INPUT_XmlTransformationFilePath="$(pwd)/test-config.transform.config"
+
+cat > test-config.xml << EOF
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <appSettings>
+    <add key="Environment" value="development" />
+  </appSettings>
+</configuration>
+EOF
+
+cat > test-config.transform.config << EOF
+<?xml version="1.0" encoding="utf-8"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <appSettings>
+    <add key="Environment" value="production" xdt:Locator="Match(key)" xdt:Transform="SetAttributes(value)" />
+    <add key="FeatureFlag" value="enabled" xdt:Transform="Insert" />
+  </appSettings>
+</configuration>
+EOF
+
+npm run build:dev
+node dist/index.js
+
+cat test-config.xml
 ```
