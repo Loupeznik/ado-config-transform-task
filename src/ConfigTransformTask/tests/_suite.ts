@@ -2,6 +2,9 @@ import * as assert from 'node:assert';
 import fs from 'node:fs';
 import * as path from 'node:path';
 import * as ttm from 'azure-pipelines-task-lib/mock-test';
+import { checkFileValidity } from '../helpers/fileHelpers';
+import transformFlatFile from '../transformations/flat';
+import transformYaml from '../transformations/yaml';
 
 describe('ConfigTransformTask tests', () => {
 	before(() => {
@@ -219,5 +222,47 @@ APP_NAME=UnitTests`;
 				done(error);
 			});
 		});
+	});
+
+	it('yaml transformation should succeed', () => {
+		const yamlInput = `app:
+  environment: development
+database:
+  host: localhost
+`;
+		const transformed = transformYaml(yamlInput, '{"app.environment":"production","database.host":"prod-db"}');
+		assert.equal(transformed.includes('environment: production'), true, 'should update app.environment');
+		assert.equal(transformed.includes('host: prod-db'), true, 'should update database.host');
+	});
+
+	it('flat transformation should preserve comments and malformed lines', () => {
+		const input = '# comment\nENV=development\nMALFORMED_LINE\n';
+		const transformed = transformFlatFile(input, '{"ENV":"production","NEW_KEY":"value"}', '=');
+
+		assert.equal(transformed.includes('# comment'), true, 'should preserve comments');
+		assert.equal(transformed.includes('MALFORMED_LINE'), true, 'should preserve malformed lines');
+		assert.equal(transformed.includes('ENV=production'), true, 'should update existing values');
+		assert.equal(transformed.includes('NEW_KEY=value'), true, 'should append missing keys');
+	});
+
+	it('flat transformation should fail on invalid transformations JSON', () => {
+		assert.throws(
+			() => transformFlatFile('ENV=development', '{', '='),
+			/Failed to parse transformations JSON/,
+			'should fail with a parse error for malformed JSON',
+		);
+	});
+
+	it('yaml transformation should fail when root is not an object', () => {
+		assert.throws(
+			() => transformYaml('- one\n- two', '{"app.environment":"production"}'),
+			/Target YAML must be a YAML object/,
+			'should fail for YAML arrays at root',
+		);
+	});
+
+	it('file validity should support uppercase extensions', () => {
+		assert.equal(checkFileValidity('test.JSON', 'json'), true, 'JSON extension should be case insensitive');
+		assert.equal(checkFileValidity('test.YmL', 'yaml'), true, 'YAML extension should be case insensitive');
 	});
 });

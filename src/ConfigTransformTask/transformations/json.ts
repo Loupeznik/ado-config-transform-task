@@ -2,6 +2,10 @@ type JsonValue = string | number | boolean | null | JsonObject | JsonValue[];
 type JsonObject = { [key: string]: JsonValue };
 type TransformationsObject = { [key: string]: JsonValue };
 
+function isJsonObject(value: unknown): value is JsonObject {
+	return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
 function removeBom(str: string): string {
 	if (str.charCodeAt(0) === 0xfeff) {
 		return str.slice(1);
@@ -10,8 +14,8 @@ function removeBom(str: string): string {
 }
 
 export default function transformJson(target: string, transformations: string) {
-	let targetJson: JsonObject;
-	let transformationsJson: TransformationsObject;
+	let targetJson: unknown;
+	let transformationsJson: unknown;
 
 	try {
 		targetJson = JSON.parse(target);
@@ -28,6 +32,14 @@ export default function transformJson(target: string, transformations: string) {
 		throw new Error(
 			`Failed to parse transformations JSON: ${error instanceof Error ? error.message : 'Unknown error'}`,
 		);
+	}
+
+	if (!isJsonObject(targetJson)) {
+		throw new Error('Target JSON must be a JSON object');
+	}
+
+	if (!isJsonObject(transformationsJson)) {
+		throw new Error('Transformations must be a JSON object');
 	}
 
 	const transformedTarget = transformJsonInternal(targetJson, transformationsJson);
