@@ -19,7 +19,7 @@
 	"author": "Dominik Zarsky",
 	"license": "MIT",
 	"dependencies": {
-		"azure-pipelines-task-lib": "^5.2.8",
+		"azure-pipelines-task-lib": "^5.281.0",
 		"js-yaml": "^4.3.1"
 	},
 	"devDependencies": {
